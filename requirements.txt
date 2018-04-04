@@ -1,0 +1,5 @@
+multitrans==1.0.0
+matplotlib==2.1.2
+opencv_python==3.4.0.12
+numpy==1.14.2
+gscraper==0.1.2
