@@ -18,7 +18,7 @@ imort tensorflow as tf
 print(tf.__version__)
 ```
 
-### Other Dependencies
+### Dependencies
 ```
 pip3 install -r requirements.txt
 ```
@@ -27,28 +27,45 @@ pip3 install -r requirements.txt
 pipreqs . --force
 ```
 
-## Getting started
-goes here
+### Tensorflow models
 
-## Install new object_detection models
-
-### 1. Download latest TF models
+#### 1. Download latest TF models
 https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
 https://github.com/tensorflow/models
 
-replace ./object_detection with downloaded models/research/object_detection 
+Extract to C:/tensorflow/ or similar\
+Add the following directories to your PYTHONPATH environment variable:
+```
+C:/tensorflow/model/research
+C:/tensorflow/model/research/slim
+```
 
-### 2. Unpack object_detection protos using Protoc
+#### 2. Unpack object_detection protos using Protoc
 
 Select the latest protoc-x.x.x-winxx.zip\
 https://github.com/google/protobuf/releases\
 unpack to ./protoc/
 
-From ./models/research/, run:
+From .../models/research/, run:
 ```bash
 C:/autolabeler/protoc/bin/protoc.exe ./object_detection/protos/*.proto --python_out=.
 ```
 Should return nothing, if successful
+
+#### 3. Install object_detection
+From .../models/research/, run:
+```bash
+python setup.py build
+
+python setup.py install
+```
+
+
+
+## Getting started
+goes here
+
+
 
 ### 3. Download an existing object_detection model
 

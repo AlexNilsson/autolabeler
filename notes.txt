@@ -1,0 +1,27 @@
+# Install Tensorflow
+https://www.tensorflow.org/install/install_windows
+
+pip3 install --upgrade --ignore-installed tensorflow
+pip3 install --upgrade --ignore-installed tensorflow-gpu
+
+# check installed version
+imort tensorflow as tf
+print(tf.__version__)
+
+# Install models to C:/<project>/
+https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
+https://github.com/tensorflow/models
+
+# get protoc from , select latest protoc-x.x.x-winxx.zip
+https://github.com/google/protobuf/releases
+install to C:/<project>/protoc/
+
+#from C:/<project>/models/research/
+C:/<project>/protoc/bin/protoc.exe ./object_detection/protos/*.proto --python_out=.
+
+# Add existing network checkpoint
+https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
+
+tar -xzf <model>.tar.gz
+
+C:\Users\alex\Documents\DEV\models\research\slim

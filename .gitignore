@@ -5,3 +5,6 @@ todo.txt
 **__pycache__/
 
 scraper/downloads/
+scraper/processed/
+cropped_images/
+protoc/
