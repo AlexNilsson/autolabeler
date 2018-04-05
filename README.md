@@ -63,7 +63,23 @@ python setup.py install
 
 
 ## Getting started
-goes here
+
+### Gather Data
+0. Run the cleanslate script to clean the project
+1. Run the scraper for selected keywords and languages
+2. run the postprocessing script to process the images
+
+### Train object detection model
+3. run the split script to split the data into train, test, batches
+4. label train batches
+5. run script to create labelmap
+6. train model
+
+### Process data
+7. run script to collect all data which should be processed
+8. run all data through the train model, cut, save, delete
+
+
 
 
 
