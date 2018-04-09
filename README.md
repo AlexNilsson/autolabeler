@@ -80,6 +80,10 @@ python setup.py install
 8. run all data through the train model, cut, save, delete
 
 
+### Label Train Batches
+Download and install label tool from: 
+https://github.com/tzutalin/labelImg
+
 
 
 
@@ -98,7 +102,31 @@ Move the unpacked folder to the ./data/ directory
 
 
 ## Training the object_detection model
-goes here
+
+### Manually label the train, test, valid data
+Manually label the train, test, and validation data for the object recognition model using an image labeler
+Download https://github.com/tzutalin/labelImg
+
+Requirements:
+```bash
+pip install SIP
+pip install PyQt5
+```
+
+From labelImg/ directory run:
+```python
+pyrcc5 -o resources.py resources.qrc
+python labelImg.py [IMAGE_PATH] [PRE-DEFINED CLASS FILE]
+python labelImg.py 'PATH\TO\autolabeler\obj_detection\images' 'PATH\TO\autolabeler\labeling\classes.txt'
+```
+Ctrl-Shift-A : Advanced Mode
+Ctrl-Shift-S : Single Class Mode
+Ctrl+s : Save
+w: Create a rect box
+d: next image
+a: previous image
+del: Delete the selected rect box
+
 
 ### Training
 py train.py --logtostderr --train_dir='C:/Users/alex/Desktop/object-detection/training/' --pipeline_config_path='C:/Users/alex/Desktop/object-detection/ssd_mobilnet_v1_pets.config'
