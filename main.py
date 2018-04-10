@@ -3,6 +3,7 @@ import os.path
 import scraper
 from scraper import scrapeImages, processImages
 from obj_detection.utility import splitData, clearData, moveTrainDataToIn, moveToIn
+from obj_detection.xml_to_tf_record import parse as create_tf_records
 
 PATH_TO_THIS_DIR = os.path.dirname(__file__)
 
@@ -48,6 +49,9 @@ def splitTrainData():
 #* 4. label train batches
 
 #* 5. run script to create labelmap
+def createLabelRecords():
+  create_tf_records()
+
 #* 6. train model
 
 ''' Process data '''
@@ -62,6 +66,8 @@ def moveDataToIn():
 #clearProject()
 #scrape()
 #processScraped()
-splitTrainData()
+#splitTrainData()
+#createLabelRecords()
 
 #moveDataToIn()
+
