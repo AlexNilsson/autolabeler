@@ -4,7 +4,6 @@ import cv2
 
 from removedupes import removeDuplicates
 
-
 def generate_id(size=8, chars=string.ascii_lowercase + string.digits):
   return ''.join(random.choice(chars) for _ in range(size))
 
@@ -24,7 +23,6 @@ def process(remove_downloaded = True, remove_duplicates = True, clear_processed 
       os.makedirs(PATH_TO_PROCESSED)
   else:
       os.makedirs(PATH_TO_PROCESSED)
-
 
   # Process images in downloads directory
   for language in os.listdir(PATH_TO_DOWNLOADS):

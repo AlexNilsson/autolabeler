@@ -38,7 +38,6 @@ def processScraped():
 
   processImages(remove_downloaded = REMOVE_DOWNLOADED, clear_processed=False)
 
-
 ''' Train object detection model '''
 #* 3. run the split script to split the data into train, test, batches
 def splitTrainData():
@@ -78,7 +77,6 @@ def setupModelPipelineConfig():
   }
 
   adjust_pipeline_config(PATH_TO_CONFIG, ADJUSTMENTS)
-
 
 #* 7. train model
 def trainModel():
