@@ -2,7 +2,7 @@ import os.path
 
 PATH_TO_DATA = os.path.join(os.path.dirname(__file__), 'data' )
 
-PATH_TO_LABEL_MAP = os.path.join(PATH_TO_DATA, 'custom_label_map.pbtxt' )
+PATH_TO_LABEL_MAP = os.path.join(PATH_TO_DATA, 'label_map.pbtxt' )
 
 PATH_TO_TRAIN_DATA = os.path.join(os.path.dirname(__file__), 'images/train' )
 PATH_TO_VALID_DATA = os.path.join(os.path.dirname(__file__), 'images/valid' )
