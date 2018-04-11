@@ -1,6 +1,24 @@
 import os.path
 
+PATH_TO_TF_MODELS = 'C:/tensorflow/models'
+PATH_TO_TRAIN_PY = os.path.join(PATH_TO_TF_MODELS, 'research/object_detection/train.py')
+PATH_TO_EVAL_PY = os.path.join(PATH_TO_TF_MODELS, 'research/object_detection/eval.py')
+
 PATH_TO_DATA = os.path.join(os.path.dirname(__file__), 'data' )
+
+MODEL = 'ssd_mobilenet_v2_coco_2018_03_29'
+PATH_TO_MODEL = os.path.join(PATH_TO_DATA, MODEL)
+PATH_TO_PIPELINE_CONFIG = os.path.join(PATH_TO_MODEL, 'pipeline.config')
+
+PATH_TO_TRAIN_DIR = os.path.join(PATH_TO_MODEL, 'train')
+PATH_TO_EVAL_DIR = os.path.join(PATH_TO_MODEL, 'eval')
+
+
+PATH_TO_TRAIN_RECORD = os.path.join(PATH_TO_DATA, 'train_labels.record')
+PATH_TO_VALID_RECORD = os.path.join(PATH_TO_DATA, 'valid_labels.record')
+
+
+
 
 PATH_TO_LABEL_MAP = os.path.join(PATH_TO_DATA, 'label_map.pbtxt' )
 

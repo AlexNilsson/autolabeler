@@ -55,32 +55,40 @@ def createLabelRecords():
 
 #* 6. setup model pipeline.config
 def setupModelPipelineConfig():
-  MODEL = 'faster_rcnn_inception_v2_coco_2018_01_28'
-  PATH_TO_MODEL = os.path.join(C.PATH_TO_DATA, MODEL)
-  PATH_TO_CONFIG = os.path.join(PATH_TO_MODEL, 'pipeline.config')
-  
-  PATH_TO_CHECKPOINT = os.path.join(PATH_TO_MODEL, 'model.ckpt')
-
-  PATH_TO_TRAIN_RECORD = os.path.join(C.PATH_TO_DATA, 'train_labels.record')
-  PATH_TO_VALID_RECORD = os.path.join(C.PATH_TO_DATA, 'valid_labels.record')
+  PATH_TO_CHECKPOINT = os.path.join(C.PATH_TO_MODEL, 'model.ckpt')
 
   ADJUSTMENTS = {
     "num_classes": 1,
     "fine_tune_checkpoint": PATH_TO_CHECKPOINT,
     "label_map_path": C.PATH_TO_LABEL_MAP,
     "train_input_reader": {
-      "input_path": PATH_TO_TRAIN_RECORD,
+      "input_path": C.PATH_TO_TRAIN_RECORD,
     },
     "eval_input_reader": {
-      "input_path": PATH_TO_VALID_RECORD,
+      "input_path": C.PATH_TO_VALID_RECORD,
+    },
+    "eval_config": {
+      "num_examples": len(os.listdir(C.PATH_TO_VALID_DATA))
     }
   }
 
-  adjust_pipeline_config(PATH_TO_CONFIG, ADJUSTMENTS)
+  adjust_pipeline_config(C.PATH_TO_PIPELINE_CONFIG, ADJUSTMENTS)
 
 #* 7. train model
 def trainModel():
-  print('train model')
+  command = 'start cmd /K py {} --logtostderr --pipeline_config_path={} --train_dir={}'.format(
+  C.PATH_TO_TRAIN_PY.replace('\\','/'),
+  C.PATH_TO_PIPELINE_CONFIG.replace('\\','/'),
+  C.PATH_TO_TRAIN_DIR.replace('\\','/'))
+
+  print(command)
+
+  #print(command)
+  #os.popen(command)
+
+def evalModel():
+  # fr. Tensorflow: The eval job will periodically poll the train directory for new checkpoints and evaluate them on a test dataset.
+  print(1+1)
 
 ''' Process data '''
 #* 8. run script to collect all data which should be processed
@@ -99,8 +107,8 @@ def autolabelInData():
 #splitTrainData()
 ''' manual labeling step'''
 #createLabelRecords()
-setupModelPipelineConfig()
-#trainModel()
+#setupModelPipelineConfig()
+trainModel()
 '''when happy with training'''
 #moveDataToIn()
 #autolabelInData()

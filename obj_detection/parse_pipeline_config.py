@@ -42,7 +42,7 @@ def adjust_pipeline_config(path_to_file, overrides_dict):
 
         for param in subDict.keys():
           value = subDict[param]
-          regex = re.escape(subDictName) + r'[\s\w\n{}:"/.]*?' + re.escape(param) + r'(:[ "\w/.]+)'
+          regex = re.escape(subDictName) + r'[\s\w\n{}:"/.]*?' + re.escape(param) + r'(:[ "\w/.:]+)'
           regex_result = re.search(regex, config)
           sub_config = regex_result.group(0)
 
@@ -54,7 +54,7 @@ def adjust_pipeline_config(path_to_file, overrides_dict):
 
           config = config.replace(sub_config, new_sub_config)
       else:
-        regex = re.escape(param) + r': [0-9\w"/.]+'
+        regex = re.escape(param) + r': [0-9\w"/.:]+'
 
         if type(value) == str:
           config = re.sub(regex, '{}: "{}"'.format(param, value.replace('\\','/')), config)
