@@ -4,10 +4,12 @@ todo.txt
 
 **__pycache__/
 
+obj_detection/images/in
 obj_detection/images/out
 obj_detection/images/test
 obj_detection/images/train
 obj_detection/images/valid
+obj_detection/images/parsed
 
 scraper/downloads/
 scraper/processed/

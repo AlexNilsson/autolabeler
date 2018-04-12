@@ -37,7 +37,7 @@ def xml_to_array(path_to_xml):
 
   return array
 
-def create_tf_record(img_data, directory):
+def create_tf_record(img_data, directory, normalize_box_coords=False):
 
   filename = img_data[0][0]
 
@@ -57,23 +57,33 @@ def create_tf_record(img_data, directory):
   class_names = [str.encode(cn) for cn in columns[3]]
   class_ids = [class_id_from_name(className) for className in class_names]
 
+  width, height = img_data[0][1], img_data[0][2]
+  xmin, xmax = columns[4], columns[6]
+  ymin, ymax = columns[5], columns[7]
+
+  if normalize_box_coords:
+    xmin = [x/width for x in xmin]
+    xmax = [x/width for x in xmax]
+    ymin = [x/height for x in ymin]
+    ymax = [x/height for x in ymax]
+
   tf_example = tf.train.Example(features=tf.train.Features(feature={
-      'image/height': dataset_util.int64_feature(img_data[0][2]),
-      'image/width': dataset_util.int64_feature(img_data[0][1]),
+      'image/height': dataset_util.int64_feature(height),
+      'image/width': dataset_util.int64_feature(width),
       'image/filename': dataset_util.bytes_feature(str.encode(filename)),
       'image/source_id': dataset_util.bytes_feature(str.encode(filename)),
       'image/encoded': dataset_util.bytes_feature(encoded_image_data),
       'image/format': dataset_util.bytes_feature(str.encode(image_format)),
-      'image/object/bbox/xmin': dataset_util.float_list_feature(columns[4]),
-      'image/object/bbox/xmax': dataset_util.float_list_feature(columns[6]),
-      'image/object/bbox/ymin': dataset_util.float_list_feature(columns[5]),
-      'image/object/bbox/ymax': dataset_util.float_list_feature(columns[7]),
+      'image/object/bbox/xmin': dataset_util.float_list_feature(xmin),
+      'image/object/bbox/xmax': dataset_util.float_list_feature(xmax),
+      'image/object/bbox/ymin': dataset_util.float_list_feature(ymin),
+      'image/object/bbox/ymax': dataset_util.float_list_feature(ymax),
       'image/object/class/text': dataset_util.bytes_list_feature(class_names),
       'image/object/class/label': dataset_util.int64_list_feature(class_ids),
   }))
   return tf_example
 
-def xml_files_to_tf_record(xml_directory, output_file, save_csv=False, csv_output_file=''):
+def xml_files_to_tf_record(xml_directory, output_file, normalize_box_coords=False, save_csv=False, csv_output_file=''):
 
   writer = tf.python_io.TFRecordWriter(output_file)
 
@@ -82,7 +92,7 @@ def xml_files_to_tf_record(xml_directory, output_file, save_csv=False, csv_outpu
   for path_to_xml in glob.glob(xml_directory + '/*.xml'):
     img_data = xml_to_array(path_to_xml)
     if len(img_data) > 0:
-      tf_record = create_tf_record(img_data, xml_directory)
+      tf_record = create_tf_record(img_data, xml_directory, normalize_box_coords=normalize_box_coords)
       writer.write(tf_record.SerializeToString())
       if save_csv: csv_matrix += img_data
 
@@ -94,15 +104,14 @@ def xml_files_to_tf_record(xml_directory, output_file, save_csv=False, csv_outpu
 
   print('Successfully created the TFRecords: {}'.format(output_file))
 
-def parse():
+def parse(save_csv=False, normalize_box_coords=False):
   INPUT_DIR = 'images'
   OUTPUT_DIR = C.PATH_TO_DATA
   FOLDERS_TO_PARSE = ['train','test','valid']
   THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-  SAVE_CSV = False
 
   for folder in FOLDERS_TO_PARSE:
     input_dir = os.path.join(THIS_DIR, INPUT_DIR, folder)
     output_record_file = os.path.join(OUTPUT_DIR, folder + '_labels.record')
     output_csv_file = os.path.join(OUTPUT_DIR, folder + '_labels.csv')
-    xml_files_to_tf_record(input_dir, output_record_file, save_csv=SAVE_CSV, csv_output_file=output_csv_file)
+    xml_files_to_tf_record(input_dir, output_record_file, normalize_box_coords=normalize_box_coords, save_csv=save_csv, csv_output_file=output_csv_file)

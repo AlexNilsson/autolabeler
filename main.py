@@ -6,6 +6,7 @@ import obj_detection.config as C
 from obj_detection.utility import splitData, clearData, moveTrainDataToIn, moveToIn
 from obj_detection.xml_to_tf_record import parse as create_tf_records
 from obj_detection.parse_pipeline_config import adjust_pipeline_config
+from obj_detection.inference import runInference
 
 PATH_TO_THIS_DIR = os.path.dirname(__file__)
 
@@ -13,7 +14,6 @@ PATH_TO_PROCESSED = os.path.join(PATH_TO_THIS_DIR, 'scraper/processed')
 
 ''' Gather Data '''
 #* 0. Run the cleanslate script to clean the project
-
 def clearProject():
 
   if os.path.exists(PATH_TO_PROCESSED): shutil.rmtree(PATH_TO_PROCESSED)
@@ -51,7 +51,10 @@ def splitTrainData():
 
 #* 5. create tf records (encoding training data & labels for: train, eval, test )
 def createLabelRecords():
-  create_tf_records()
+  create_tf_records(
+    normalize_box_coords=True,
+    save_csv=True
+    )
 
 #* 6. setup model pipeline.config
 def setupModelPipelineConfig():
@@ -80,15 +83,36 @@ def trainModel():
   C.PATH_TO_TRAIN_PY.replace('\\','/'),
   C.PATH_TO_PIPELINE_CONFIG.replace('\\','/'),
   C.PATH_TO_TRAIN_DIR.replace('\\','/'))
-
-  print(command)
-
-  #print(command)
-  #os.popen(command)
+  os.popen(command)
 
 def evalModel():
   # fr. Tensorflow: The eval job will periodically poll the train directory for new checkpoints and evaluate them on a test dataset.
-  print(1+1)
+  command = 'start cmd /K py {} --logtostderr --pipeline_config_path={} --checkpoint_dir={} --eval_dir={}'.format(
+  C.PATH_TO_EVAL_PY.replace('\\','/'),
+  C.PATH_TO_PIPELINE_CONFIG.replace('\\','/'),
+  C.PATH_TO_TRAIN_DIR.replace('\\','/'),
+  C.PATH_TO_EVAL_DIR.replace('\\','/'))
+  os.popen(command)
+
+def exportInferenceGraph(checkpoint_step=None):
+  # Will export the model with highest checkpoint_step if None is specified
+  checkpoint_base_name = 'model.ckpt-'
+
+  if checkpoint_step == None:
+    for f in reversed(os.listdir(C.PATH_TO_TRAIN_DIR)):
+      if os.path.isfile(os.path.join(C.PATH_TO_TRAIN_DIR, f)) and checkpoint_base_name in f:
+        checkpoint = os.path.splitext(f)[0]
+        break
+  else:
+    checkpoint = checkpoint_base_name + str(checkpoint_step)
+
+  command = 'start cmd /C py {} --logtostderr --input_type="image_tensor" --pipeline_config_path={} --trained_checkpoint_prefix={} --output_directory={}'.format(
+    C.PATH_TO_EXPORT_INFERENCE_GRAPH_PY.replace('\\','/'),
+    C.PATH_TO_PIPELINE_CONFIG.replace('\\','/'),
+    os.path.join(C.PATH_TO_TRAIN_DIR, checkpoint).replace('\\','/'),
+    C.PATH_TO_INFERENCE_GRAPHS.replace('\\','/')
+  )
+  os.popen(command)
 
 ''' Process data '''
 #* 8. run script to collect all data which should be processed
@@ -97,7 +121,8 @@ def moveDataToIn():
   moveToIn(PATH_TO_PROCESSED)
 
 #* 9. run all data through the train model, cut, save, delete
-def autolabelInData():
+def parseInData():
+  runInference()
   print('parse In to Out')
 
 
@@ -108,7 +133,9 @@ def autolabelInData():
 ''' manual labeling step'''
 #createLabelRecords()
 #setupModelPipelineConfig()
-trainModel()
+#trainModel()
+#evalModel()
 '''when happy with training'''
+#exportInferenceGraph()
 #moveDataToIn()
-#autolabelInData()
+parseInData()
